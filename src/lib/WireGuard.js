@@ -185,6 +185,7 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
         client.transferRx = Number(transferRx);
         client.transferTx = Number(transferTx);
         client.persistentKeepalive = persistentKeepalive;
+        client.allowedIPs = allowedIps;
       });
 
     return clients;
