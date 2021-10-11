@@ -15,6 +15,7 @@ const {
   createRouter,
   defineEventHandler,
   fromNodeMiddleware,
+  getHeader,
   getRouterParam,
   toNodeListener,
   readBody,
@@ -23,6 +24,7 @@ const {
 } = require('h3');
 
 const WireGuard = require('../services/WireGuard');
+const Metrics = require('../services/Metrics');
 
 const {
   PORT,
@@ -35,6 +37,10 @@ const {
   UI_CHART_TYPE,
   UI_SHOW_LINKS,
   UI_ENABLE_SORT_CLIENTS,
+
+  METRICS_ENABLED,
+  METRICS_USER,
+  METRICS_PASSWORD,
 } = require('../config');
 
 const requiresPassword = !!PASSWORD_HASH;
@@ -305,6 +311,38 @@ module.exports = class Server {
         const { file } = await readBody(event);
         await WireGuard.restoreConfiguration(file);
         return { success: true };
+      }));
+
+    const slidesLiveRouter = createRouter();
+    app.use(slidesLiveRouter);
+
+    slidesLiveRouter
+      .get('/metrics', defineEventHandler(async (event) => {
+        if (!METRICS_ENABLED) {
+          throw createError({ status: 404 });
+        }
+
+        setHeader(event, 'www-authenticate', 'Basic realm="WireGuard Metrics"');
+
+        if (METRICS_USER || METRICS_PASSWORD) {
+          if (!getHeader(event, 'authorization')) {
+            throw createError({ status: 401 });
+          }
+
+          const [authScheme, authCredentials] = getHeader(event, 'authorization').split(' ');
+          if (authScheme !== 'Basic' || !authCredentials) {
+            throw createError({ status: 401 });
+          }
+
+          const credentials = Buffer.from(`${METRICS_USER || ''}:${METRICS_PASSWORD || ''}`).toString('base64');
+          if (authCredentials !== credentials) {
+            throw createError({ status: 401 });
+          }
+        }
+
+        const metrics = await Metrics.getMetrics(await WireGuard.getClients());
+        setHeader(event, 'content-type', 'text/plain');
+        return metrics;
       }));
 
     // Static assets
