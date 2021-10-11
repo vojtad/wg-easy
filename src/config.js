@@ -26,3 +26,7 @@ iptables -A FORWARD -o wg0 -j ACCEPT;
 
 module.exports.WG_PRE_DOWN = process.env.WG_PRE_DOWN || '';
 module.exports.WG_POST_DOWN = process.env.WG_POST_DOWN || '';
+
+module.exports.METRICS_ENABLED = process.env.METRICS_ENABLED === 'true' || false;
+module.exports.METRICS_USER = process.env.METRICS_USER;
+module.exports.METRICS_PASSWORD = process.env.METRICS_PASSWORD;
