@@ -16,10 +16,23 @@ COPY src/ /app/
 WORKDIR /app
 RUN npm ci --production
 
+FROM docker.io/library/node:14-alpine@sha256:dc92f36e7cd917816fa2df041d4e9081453366381a00f40398d99e9392e78664 AS build_udp2raw
+
+WORKDIR /udp2raw
+
+ARG UDP2RAW_VERSION=20200818.0
+
+RUN wget https://github.com/wangyu-/udp2raw-tunnel/releases/download/${UDP2RAW_VERSION}/udp2raw_binaries.tar.gz
+RUN tar xzvf udp2raw_binaries.tar.gz
+
 # Copy build result to a new image.
 # This saves a lot of disk space.
 FROM docker.io/library/node:14-alpine@sha256:dc92f36e7cd917816fa2df041d4e9081453366381a00f40398d99e9392e78664
+
 COPY --from=build_node_modules /app /app
+
+COPY --from=build_udp2raw /udp2raw/udp2raw_amd64 /udp2raw/
+RUN ln -snf /udp2raw/udp2raw_amd64 /udp2raw/udp2raw
 
 # Move node_modules one directory up, so during development
 # we don't have to mount it in a volume.
@@ -36,7 +49,6 @@ RUN npm i -g nodemon
 # Install Linux packages
 RUN apk add -U --no-cache \
   wireguard-tools \
-  udp2raw \
   dumb-init
 
 # Expose Ports
@@ -45,6 +57,7 @@ EXPOSE 51821/tcp
 
 # Set Environment
 ENV DEBUG=Server,WireGuard
+ENV PATH="/udp2raw:${PATH}"
 
 # Run Web UI
 WORKDIR /app
