@@ -168,6 +168,14 @@ module.exports = class Server {
         const { address } = req.body;
         return WireGuard.updateClientAddress({ clientId, address });
       }))
+      .post('/api/wireguard/client/:clientId/enable_udp2raw', Util.promisify(async req => {
+        const { clientId } = req.params;
+        return WireGuard.updateClientUdp2rawEnabled({ clientId, udp2rawEnabled: true });
+      }))
+      .post('/api/wireguard/client/:clientId/disable_udp2raw', Util.promisify(async req => {
+        const { clientId } = req.params;
+        return WireGuard.updateClientUdp2rawEnabled({ clientId, udp2rawEnabled: false });
+      }))
 
       .listen(PORT, () => {
         debug(`Listening on http://0.0.0.0:${PORT}`);

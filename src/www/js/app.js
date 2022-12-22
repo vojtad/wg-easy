@@ -239,6 +239,16 @@ new Vue({
         .catch(err => alert(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error));
     },
+    enableClientUdp2raw(client) {
+      this.api.enableClientUdp2raw({ clientId: client.id })
+        .catch(err => alert(err.message || err.toString()))
+        .finally(() => this.refresh().catch(console.error));
+    },
+    disableClientUdp2raw(client) {
+      this.api.disableClientUdp2raw({ clientId: client.id })
+        .catch(err => alert(err.message || err.toString()))
+        .finally(() => this.refresh().catch(console.error));
+    },
   },
   filters: {
     bytes,

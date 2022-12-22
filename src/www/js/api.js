@@ -117,4 +117,18 @@ class API {
     });
   }
 
+  async enableClientUdp2raw({ clientId }) {
+    return this.call({
+      method: 'post',
+      path: `/wireguard/client/${clientId}/enable_udp2raw`,
+    });
+  }
+
+  async disableClientUdp2raw({ clientId }) {
+    return this.call({
+      method: 'post',
+      path: `/wireguard/client/${clientId}/disable_udp2raw`,
+    });
+  }
+
 }

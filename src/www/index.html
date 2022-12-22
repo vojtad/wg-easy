@@ -233,6 +233,16 @@
                 <div class="text-right">
                   <div class="text-gray-400">
 
+                    <!-- Enable/Disable udp2raw -->
+                    <div @click="disableClientUdp2raw(client)" v-if="client.udp2rawEnabled === true" title="Disable udp2raw"
+                      class="inline-block align-middle rounded-full h-6 mr-1 px-2 text-white text-sm leading-6 bg-red-800 cursor-pointer hover:bg-red-700 transition-all">
+                      udp2raw
+                    </div>
+                    <div @click="enableClientUdp2raw(client)" v-if="client.udp2rawEnabled === false" title="Enable Client"
+                      class="inline-block align-middle rounded-full h-6 mr-1 px-2 text-white text-sm leading-6 bg-gray-200 cursor-pointer hover:bg-gray-300 transition-all">
+                      udp2raw
+                    </div>
+
                     <!-- Enable/Disable -->
                     <div @click="disableClient(client)" v-if="client.enabled === true" title="Disable Client"
                       class="inline-block align-middle rounded-full w-10 h-6 mr-1 bg-red-800 cursor-pointer hover:bg-red-700 transition-all">

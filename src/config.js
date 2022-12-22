@@ -30,3 +30,8 @@ module.exports.WG_POST_DOWN = process.env.WG_POST_DOWN || '';
 module.exports.METRICS_ENABLED = process.env.METRICS_ENABLED === 'true' || false;
 module.exports.METRICS_USER = process.env.METRICS_USER;
 module.exports.METRICS_PASSWORD = process.env.METRICS_PASSWORD;
+
+module.exports.UDP2RAW_ENABLED = process.env.UDP2RAW_ENABLED === 'true' || false;
+module.exports.UDP2RAW_SHARED_SECRET = process.env.UDP2RAW_SHARED_SECRET || 'shared secret';
+module.exports.UDP2RAW_HOST = process.env.UDP2RAW_HOST || process.env.WG_HOST;
+module.exports.UDP2RAW_PORT = process.env.UDP2RAW_PORT || 51823;
