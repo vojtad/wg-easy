@@ -17,6 +17,17 @@ module.exports = class Util {
     return true;
   }
 
+  static isValidIPv4Network(str) {
+    const parts = str.split('/');
+    if (parts.length !== 2) return false;
+    if (!this.isValidIPv4(parts[0])) return false;
+
+    if (!parts[1].match(/^\d+$/)) return false;
+    if (parseInt(parts[1], 10) < 0 || parseInt(parts[1], 10) > 32) return false;
+
+    return true;
+  }
+
   static promisify(fn) {
     // eslint-disable-next-line func-names
     return function(req, res) {

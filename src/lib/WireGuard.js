@@ -112,13 +112,15 @@ PostDown = ${WG_POST_DOWN}
     for (const [clientId, client] of Object.entries(config.clients)) {
       if (!client.enabled) continue;
 
+      const allowedIPs = [`${client.address}/32`].concat(client.serverAllowedIPs || []);
+
       result += `
 
 # Client: ${client.name} (${clientId})
 [Peer]
 PublicKey = ${client.publicKey}
 ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
-}AllowedIPs = ${client.address}/32`;
+}AllowedIPs = ${allowedIPs.join(',')}`;
     }
 
     debug('Config saving...');
@@ -146,6 +148,8 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
       enabled: client.enabled,
       address: client.address,
       publicKey: client.publicKey,
+      serverAllowedIPs: client.serverAllowedIPs,
+      clientAllowedIPs: client.clientAllowedIPs,
       createdAt: new Date(client.createdAt),
       updatedAt: new Date(client.updatedAt),
       allowedIPs: client.allowedIPs,
@@ -206,6 +210,8 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
     const config = await this.getConfig();
     const client = await this.getClient({ clientId });
 
+    const allowedIPs = [WG_ALLOWED_IPS].concat(client.clientAllowedIPs || []);
+
     return `
 [Interface]
 PrivateKey = ${client.privateKey ? `${client.privateKey}` : 'REPLACE_ME'}
@@ -216,7 +222,7 @@ ${WG_MTU ? `MTU = ${WG_MTU}\n` : ''}\
 [Peer]
 PublicKey = ${config.server.publicKey}
 ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
-}AllowedIPs = ${WG_ALLOWED_IPS}
+}AllowedIPs = ${allowedIPs.join(',')}
 PersistentKeepalive = ${WG_PERSISTENT_KEEPALIVE}
 Endpoint = ${WG_HOST}:${WG_CONFIG_PORT}`;
   }
@@ -268,6 +274,9 @@ Endpoint = ${WG_HOST}:${WG_CONFIG_PORT}`;
       privateKey,
       publicKey,
       preSharedKey,
+
+      serverAllowedIPs: null,
+      clientAllowedIPs: null,
 
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -355,6 +364,44 @@ Endpoint = ${WG_HOST}:${WG_CONFIG_PORT}`;
   // Shutdown wireguard
   async Shutdown() {
     await Util.exec('wg-quick down wg0').catch(() => {});
+  }
+
+  async updateClientServerAllowedIPs({ clientId, allowedIPs }) {
+    const client = await this.getClient({ clientId });
+
+    if (allowedIPs) {
+      allowedIPs = allowedIPs.split ? allowedIPs.split(',').map((ip) => ip.trim()) : [allowedIPs.trim()];
+
+      for (const ip of allowedIPs) {
+        if (!Util.isValidIPv4Network(ip)) {
+          throw new ServerError(`Invalid Allowed IP: ${ip}`, 400);
+        }
+      }
+    }
+
+    client.serverAllowedIPs = allowedIPs || null;
+    client.updatedAt = new Date();
+
+    await this.saveConfig();
+  }
+
+  async updateClientClientAllowedIPs({ clientId, allowedIPs }) {
+    const client = await this.getClient({ clientId });
+
+    if (allowedIPs) {
+      allowedIPs = allowedIPs.split ? allowedIPs.split(',').map((ip) => ip.trim()) : [allowedIPs.trim()];
+
+      for (const ip of allowedIPs) {
+        if (!Util.isValidIPv4Network(ip)) {
+          throw new ServerError(`Invalid Allowed IP: ${ip}`, 400);
+        }
+      }
+    }
+
+    client.clientAllowedIPs = allowedIPs || null;
+    client.updatedAt = new Date();
+
+    await this.saveConfig();
   }
 
 };

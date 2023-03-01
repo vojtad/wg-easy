@@ -259,6 +259,61 @@
                       <div v-if="uiShowLinks" :ref="'client-' + client.id + '-hash'" class="text-gray-400 text-xs">
                         <a :href="'./' + client.hash + ''">{{document.location.protocol}}//{{document.location.host}}/{{client.hash}}</a>
                       </div>
+                      <!-- Server Allowed IPs -->
+                      <div class="text-gray-400 dark:text-neutral-400 text-xs">
+                        <span class="group flex items-center gap-1">
+                          <span class="inline-block border-t-2 border-b-2 border-transparent">Server allowed IPs:</span>
+      
+                          <!-- Show -->
+                          <input v-show="clientEditServerAllowedIPsId === client.id" v-model="clientEditServerAllowedIPs"
+                            v-on:keyup.enter="updateClientServerAllowedIPs(client, clientEditServerAllowedIPs); clientEditServerAllowedIPs = null; clientEditServerAllowedIPsId = null;"
+                            v-on:keyup.escape="clientEditServerAllowedIPs = null; clientEditServerAllowedIPsId = null;"
+                            :ref="'client-' + client.id + '-server-allowed-ips'"
+                            class="flex-grow rounded border-2 dark:bg-neutral-700 border-gray-100 dark:border-neutral-600 focus:border-gray-200 dark:focus:border-neutral-500 outline-none w-20 text-black dark:text-neutral-300 dark:placeholder:text-neutral-500" />
+                          <span v-show="clientEditServerAllowedIPsId !== client.id"
+                            class="inline-block border-t-2 border-b-2 border-transparent">{{(client.serverAllowedIPs || []).join(',')}}</span>
+      
+                          <!-- Edit -->
+                          <span v-show="clientEditServerAllowedIPsId !== client.id"
+                            @click="clientEditServerAllowedIPs = client.serverAllowedIPs.join(','); clientEditServerAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-server-allowed-ips'][0].select(), 1);"
+                            class="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4 inline align-middle opacity-25 hover:opacity-100" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <!-- Client Allowed IPs -->
+                      <div class="text-gray-400 dark:text-neutral-400 text-xs">
+                        <span class="group flex items-center gap-1">
+                          <span class="inline-block border-t-2 border-b-2 border-transparent">Client allowed IPs:</span>
+      
+                          <!-- Show -->
+                          <input v-show="clientEditClientAllowedIPsId === client.id" v-model="clientEditClientAllowedIPs"
+                            v-on:keyup.enter="updateClientClientAllowedIPs(client, clientEditClientAllowedIPs); clientEditClientAllowedIPs = null; clientEditClientAllowedIPsId = null;"
+                            v-on:keyup.escape="clientEditClientAllowedIPs = null; clientEditClientAllowedIPsId = null;"
+                            :ref="'client-' + client.id + '-client-allowed-ips'"
+                            class="flex-grow rounded border-2 dark:bg-neutral-700 border-gray-100 dark:border-neutral-600 focus:border-gray-200 dark:focus:border-neutral-500 outline-none w-20 text-black dark:text-neutral-300 dark:placeholder:text-neutral-500" />
+                          <span v-show="clientEditClientAllowedIPsId !== client.id"
+                            class="inline-block border-t-2 border-b-2 border-transparent">{{(client.clientAllowedIPs || []).join(',')}}</span>
+      
+                          <!-- Edit -->
+                          <span v-show="clientEditClientAllowedIPsId !== client.id"
+                            @click="clientEditClientAllowedIPs = client.clientAllowedIPs.join(','); clientEditClientAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-client-allowed-ips'][0].select(), 1);"
+                            class="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4 inline align-middle opacity-25 hover:opacity-100" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+
                     </div>
 
                     <!-- Info -->

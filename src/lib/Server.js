@@ -343,6 +343,18 @@ module.exports = class Server {
         const metrics = await Metrics.getMetrics(await WireGuard.getClients());
         setHeader(event, 'content-type', 'text/plain');
         return metrics;
+      }))
+      .put('/api/wireguard/client/:clientId/server_allowed_ips', defineEventHandler(async (event) => {
+        const clientId = getRouterParam(event, 'clientId');
+        const { allowedIPs } = await readBody(event);
+        await WireGuard.updateClientServerAllowedIPs({ clientId, allowedIPs });
+        return { success: true };
+      }))
+      .put('/api/wireguard/client/:clientId/client_allowed_ips', defineEventHandler(async (event) => {
+        const clientId = getRouterParam(event, 'clientId');
+        const { allowedIPs } = await readBody(event);
+        await WireGuard.updateClientClientAllowedIPs({ clientId, allowedIPs });
+        return { success: true };
       }));
 
     // Static assets

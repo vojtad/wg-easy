@@ -81,6 +81,10 @@ new Vue({
     clientEditNameId: null,
     clientEditAddress: null,
     clientEditAddressId: null,
+    clientEditServerAllowedIPs: null,
+    clientEditServerAllowedIPsId: null,
+    clientEditClientAllowedIPsId: null,
+    clientEditClientAllowedIPs: null,
     qrcode: null,
 
     currentRelease: null,
@@ -363,6 +367,16 @@ new Vue({
     },
     toggleCharts() {
       localStorage.setItem('uiShowCharts', this.uiShowCharts ? 1 : 0);
+    },
+    updateClientServerAllowedIPs(client, allowedIPs) {
+      this.api.updateClientServerAllowedIPs({ clientId: client.id, allowedIPs })
+        .catch((err) => alert(err.message || err.toString()))
+        .finally(() => this.refresh().catch(console.error));
+    },
+    updateClientClientAllowedIPs(client, allowedIPs) {
+      this.api.updateClientClientAllowedIPs({ clientId: client.id, allowedIPs })
+        .catch((err) => alert(err.message || err.toString()))
+        .finally(() => this.refresh().catch(console.error));
     },
   },
   filters: {

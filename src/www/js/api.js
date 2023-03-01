@@ -167,4 +167,20 @@ class API {
     });
   }
 
+  async updateClientServerAllowedIPs({ clientId, allowedIPs }) {
+    return this.call({
+      method: 'put',
+      path: `/wireguard/client/${clientId}/server_allowed_ips/`,
+      body: { allowedIPs },
+    });
+  }
+
+  async updateClientClientAllowedIPs({ clientId, allowedIPs }) {
+    return this.call({
+      method: 'put',
+      path: `/wireguard/client/${clientId}/client_allowed_ips/`,
+      body: { allowedIPs },
+    });
+  }
+
 }
