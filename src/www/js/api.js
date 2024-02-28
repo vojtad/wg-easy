@@ -3,6 +3,11 @@
 
 'use strict';
 
+function dot2num(dot) {
+  const d = dot.split('.');
+  return ((((((+d[0]) * 256) + (+d[1])) * 256) + (+d[2])) * 256) + (+d[3]);
+}
+
 class API {
 
   async call({ method, path, body }) {
@@ -104,7 +109,8 @@ class API {
       latestHandshakeAt: client.latestHandshakeAt !== null
         ? new Date(client.latestHandshakeAt)
         : null,
-    })));
+      sortKey: dot2num(client.address),
+    })).sort((a, b) => a.sortKey - b.sortKey));
   }
 
   async createClient({ name }) {
