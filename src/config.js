@@ -44,3 +44,4 @@ module.exports.UI_ENABLE_SORT_CLIENTS = process.env.UI_ENABLE_SORT_CLIENTS || 'f
 module.exports.METRICS_ENABLED = process.env.METRICS_ENABLED === 'true' || false;
 module.exports.METRICS_USER = process.env.METRICS_USER;
 module.exports.METRICS_PASSWORD = process.env.METRICS_PASSWORD;
+module.exports.SERVER_NAME = process.env.SERVER_NAME || 'Wireguard';

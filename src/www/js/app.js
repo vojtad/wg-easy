@@ -182,6 +182,7 @@ new Vue({
       },
     },
 
+    serverName: 'Wireguard',
   },
   methods: {
     dateTime: (value) => {
@@ -453,6 +454,8 @@ new Vue({
         localStorage.setItem('lang', lang);
         i18n.locale = lang;
       }
+
+      this.serverName = await this.api.getServerName();
 
       const currentRelease = await this.api.getRelease();
       const latestRelease = await fetch('https://wg-easy.github.io/wg-easy/changelog.json')

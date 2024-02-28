@@ -41,6 +41,7 @@ const {
   METRICS_ENABLED,
   METRICS_USER,
   METRICS_PASSWORD,
+  SERVER_NAME,
 } = require('../config');
 
 const requiresPassword = !!PASSWORD_HASH;
@@ -171,7 +172,7 @@ module.exports = class Server {
     // WireGuard
     app.use(
       fromNodeMiddleware((req, res, next) => {
-        if (!requiresPassword || !req.url.startsWith('/api/')) {
+        if (!requiresPassword || req.url === '/api/server_name' || !req.url.startsWith('/api/')) {
           return next();
         }
 
@@ -355,6 +356,10 @@ module.exports = class Server {
         const { allowedIPs } = await readBody(event);
         await WireGuard.updateClientClientAllowedIPs({ clientId, allowedIPs });
         return { success: true };
+      }))
+      .get('/api/server_name', defineEventHandler(async (event) => {
+        setHeader(event, 'Content-Type', 'application/json');
+        return `"${SERVER_NAME}"`;
       }));
 
     // Static assets

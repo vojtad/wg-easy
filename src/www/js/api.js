@@ -189,4 +189,11 @@ class API {
     });
   }
 
+  async getServerName() {
+    return this.call({
+      method: 'get',
+      path: '/server_name',
+    });
+  }
+
 }
