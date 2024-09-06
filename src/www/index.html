@@ -275,7 +275,7 @@
       
                           <!-- Edit -->
                           <span v-show="clientEditServerAllowedIPsId !== client.id"
-                            @click="clientEditServerAllowedIPs = client.serverAllowedIPs.join(','); clientEditServerAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-server-allowed-ips'][0].select(), 1);"
+                            @click="clientEditServerAllowedIPs = (client.serverAllowedIPs || []).join(','); clientEditServerAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-server-allowed-ips'][0].select(), 1);"
                             class="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
                             <svg xmlns="http://www.w3.org/2000/svg"
                               class="h-4 w-4 inline align-middle opacity-25 hover:opacity-100" fill="none"
@@ -302,7 +302,7 @@
       
                           <!-- Edit -->
                           <span v-show="clientEditClientAllowedIPsId !== client.id"
-                            @click="clientEditClientAllowedIPs = client.clientAllowedIPs.join(','); clientEditClientAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-client-allowed-ips'][0].select(), 1);"
+                            @click="clientEditClientAllowedIPs = (client.clientAllowedIPs || []).join(','); clientEditClientAllowedIPsId = client.id; setTimeout(() => $refs['client-' + client.id + '-client-allowed-ips'][0].select(), 1);"
                             class="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
                             <svg xmlns="http://www.w3.org/2000/svg"
                               class="h-4 w-4 inline align-middle opacity-25 hover:opacity-100" fill="none"
